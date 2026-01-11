@@ -1,0 +1,50 @@
+{
+  "expo": {
+    "name": "Spotix Scanner",
+    "slug": "spotix-scanner",
+    "scheme": "spotix-scanner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.spotix.app",
+      "supportsTabletMode": true,
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#6b2fa5"
+      }
+    },
+    "android": {
+      "package": "com.spotix.app",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/splash.png",
+        "backgroundColor": "#6b2fa5"
+      },
+      "splash": {
+        "image": "./assets/images/splash.png",
+        "resizeMode": "cover",
+        "backgroundColor": "#6b2fa5"
+      }
+    },
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#6b2fa5"
+    },
+    "web": {
+      "favicon": "./assets/images/logo.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "903f2543-875d-4205-a4cb-827ddd6600fc"
+      }
+    }
+  }
+}
