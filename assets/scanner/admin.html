@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotix Admin Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6b2fa5',
+                        'primary-dark': '#5a2789',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+        }
+        .pulse-slow {
+            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <div class="bg-white shadow-sm border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mr-4 shadow-lg">
+                        <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">Admin Control Panel</h1>
+                        <p class="text-sm text-gray-600" id="eventName">Loading...</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div id="liveIndicator" class="flex items-center bg-green-50 px-3 py-2 rounded-lg">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2 pulse-slow"></div>
+                        <span class="text-sm font-medium text-green-700">Live</span>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-sm text-gray-500">Last Update</div>
+                        <div id="lastUpdate" class="text-sm font-semibold text-gray-900">--:--:--</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-sm font-medium text-gray-600">Total Scans</div>
+                    <div class="w-10 h-10 bg-primary bg-opacity-10 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-4xl font-bold text-gray-900" id="totalScans">0</div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-sm font-medium text-gray-600">Successful</div>
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-4xl font-bold text-green-600" id="successfulScans">0</div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-sm font-medium text-gray-600">Failed</div>
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-4xl font-bold text-red-600" id="failedScans">0</div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg p-6 border border-gray-100">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="text-sm font-medium text-gray-600">Active Scanners</div>
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                    </div>
+                </div>
+                <div class="text-4xl font-bold text-blue-600" id="activeScanners">0</div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Active Scanners -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    Active Scanners
+                </h2>
+                <div id="scannersList" class="space-y-3 max-h-96 overflow-y-auto">
+                    <div class="text-center text-gray-500 py-8">
+                        <p>No active scanners</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Scans -->
+            <div class="bg-white rounded-2xl shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+                    <svg class="w-6 h-6 mr-2 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Recent Activity
+                </h2>
+                <div id="activityLog" class="space-y-2 max-h-96 overflow-y-auto">
+                    <div class="text-center text-gray-500 py-8">
+                        <p>No activity yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ws = null;
+        let reconnectInterval = null;
+
+        function connectWebSocket() {
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${window.location.host}/ws/admin`;
+
+            ws = new WebSocket(wsUrl);
+
+            ws.onopen = () => {
+                console.log('WebSocket connected');
+                document.getElementById('liveIndicator').classList.remove('bg-red-50');
+                document.getElementById('liveIndicator').classList.add('bg-green-50');
+                document.getElementById('liveIndicator').querySelector('span').textContent = 'Live';
+                document.getElementById('liveIndicator').querySelector('span').classList.remove('text-red-700');
+                document.getElementById('liveIndicator').querySelector('span').classList.add('text-green-700');
+                document.getElementById('liveIndicator').querySelector('div').classList.remove('bg-red-500');
+                document.getElementById('liveIndicator').querySelector('div').classList.add('bg-green-500');
+                
+                if (reconnectInterval) {
+                    clearInterval(reconnectInterval);
+                    reconnectInterval = null;
+                }
+            };
+
+            ws.onmessage = (event) => {
+                const message = JSON.parse(event.data);
+                handleMessage(message);
+            };
+
+            ws.onclose = () => {
+                console.log('WebSocket disconnected');
+                document.getElementById('liveIndicator').classList.remove('bg-green-50');
+                document.getElementById('liveIndicator').classList.add('bg-red-50');
+                document.getElementById('liveIndicator').querySelector('span').textContent = 'Disconnected';
+                document.getElementById('liveIndicator').querySelector('span').classList.remove('text-green-700');
+                document.getElementById('liveIndicator').querySelector('span').classList.add('text-red-700');
+                document.getElementById('liveIndicator').querySelector('div').classList.remove('bg-green-500');
+                document.getElementById('liveIndicator').querySelector('div').classList.add('bg-red-500');
+                
+                if (!reconnectInterval) {
+                    reconnectInterval = setInterval(() => {
+                        connectWebSocket();
+                    }, 3000);
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        function handleMessage(message) {
+            updateLastUpdate();
+
+            switch (message.type) {
+                case 'scanner_connected':
+                    addScannerToList(message.data);
+                    addActivity('info', `${message.data.scannerName} connected`);
+                    break;
+                case 'scan_success':
+                    addActivity('success', `✓ ${message.data.attendeeName} verified by ${getScannerName(message.data.scannerId)}`);
+                    break;
+                case 'scan_failed':
+                    addActivity('error', `✗ Invalid ticket scanned by ${getScannerName(message.data.scannerId)}`);
+                    break;
+                case 'scan_duplicate':
+                    addActivity('warning', `⚠ ${message.data.attendeeName} already verified`);
+                    break;
+            }
+        }
+
+        function loadInitialData() {
+            fetch('/api/admin/stats')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('eventName').textContent = data.event.name;
+                    updateStats(data.stats);
+                    updateScannersList(data.scanners);
+                    updateActivityLog(data.recentScans);
+                })
+                .catch(err => {
+                    console.error('Failed to load initial data:', err);
+                });
+        }
+
+        function updateStats(stats) {
+            document.getElementById('totalScans').textContent = stats.totalScans;
+            document.getElementById('successfulScans').textContent = stats.successfulScans;
+            document.getElementById('failedScans').textContent = stats.failedScans;
+            document.getElementById('activeScanners').textContent = stats.activeScannersCount;
+        }
+
+        function updateScannersList(scanners) {
+            const list = document.getElementById('scannersList');
+            
+            if (scanners.length === 0) {
+                list.innerHTML = '<div class="text-center text-gray-500 py-8"><p>No active scanners</p></div>';
+                return;
+            }
+
+            list.innerHTML = scanners.map(scanner => `
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 bg-primary bg-opacity-10 rounded-full flex items-center justify-center mr-3">
+                                <svg class="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-gray-900">${scanner.name}</div>
+                                <div class="text-xs text-gray-500">Connected: ${new Date(scanner.connectedAt).toLocaleTimeString()}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold text-primary">${scanner.totalScans}</div>
+                            <div class="text-xs text-gray-500">scans</div>
+                        </div>
+                    </div>
+                    ${scanner.lastScanAt ? `
+                        <div class="mt-2 text-xs text-gray-500">
+                            Last scan: ${new Date(scanner.lastScanAt).toLocaleTimeString()}
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function addScannerToList(scanner) {
+            // Reload scanners list
+            fetch('/api/admin/stats')
+                .then(res => res.json())
+                .then(data => updateScannersList(data.scanners));
+        }
+
+        function updateActivityLog(scans) {
+            const log = document.getElementById('activityLog');
+            
+            if (scans.length === 0) {
+                log.innerHTML = '<div class="text-center text-gray-500 py-8"><p>No activity yet</p></div>';
+                return;
+            }
+
+            log.innerHTML = scans.map(scan => {
+                const colors = {
+                    success: { bg: 'bg-green-50', text: 'text-green-700', icon: '✓' },
+                    failed: { bg: 'bg-red-50', text: 'text-red-700', icon: '✗' },
+                    already_verified: { bg: 'bg-yellow-50', text: 'text-yellow-700', icon: '⚠' }
+                };
+                const color = colors[scan.status] || colors.failed;
+                
+                return `
+                    <div class="${color.bg} rounded-lg p-3 border border-gray-200 slide-in">
+                        <div class="flex items-start">
+                            <span class="text-lg mr-2">${color.icon}</span>
+                            <div class="flex-1">
+                                <div class="font-medium ${color.text}">${scan.scannerName}</div>
+                                <div class="text-sm text-gray-600">Ticket: ${scan.ticketId}</div>
+                                <div class="text-xs text-gray-500 mt-1">${new Date(scan.timestamp).toLocaleString()}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function addActivity(type, message) {
+            const log = document.getElementById('activityLog');
+            
+            // Remove empty state
+            if (log.querySelector('.text-center')) {
+                log.innerHTML = '';
+            }
+
+            const colors = {
+                success: { bg: 'bg-green-50', text: 'text-green-700' },
+                error: { bg: 'bg-red-50', text: 'text-red-700' },
+                warning: { bg: 'bg-yellow-50', text: 'text-yellow-700' },
+                info: { bg: 'bg-blue-50', text: 'text-blue-700' }
+            };
+            const color = colors[type] || colors.info;
+
+            const activityHtml = `
+                <div class="${color.bg} rounded-lg p-3 border border-gray-200 slide-in">
+                    <div class="font-medium ${color.text}">${message}</div>
+                    <div class="text-xs text-gray-500 mt-1">${new Date().toLocaleTimeString()}</div>
+                </div>
+            `;
+
+            log.insertAdjacentHTML('afterbegin', activityHtml);
+
+            // Keep only last 50 activities
+            while (log.children.length > 50) {
+                log.removeChild(log.lastChild);
+            }
+
+            // Update stats
+            fetch('/api/admin/stats')
+                .then(res => res.json())
+                .then(data => updateStats(data.stats));
+        }
+
+        function getScannerName(scannerId) {
+            // This would be fetched from server in real implementation
+            return 'Scanner';
+        }
+
+        function updateLastUpdate() {
+            document.getElementById('lastUpdate').textContent = new Date().toLocaleTimeString();
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadInitialData();
+            connectWebSocket();
+            
+            // Refresh data every 5 seconds
+            setInterval(() => {
+                loadInitialData();
+            }, 5000);
+        });
+    </script>
+</body>
+</html>

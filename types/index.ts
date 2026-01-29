@@ -1,80 +1,81 @@
-// Authentication
-export interface AuthCredentials {
-  email: string
-  password: string
-}
-
-export interface AuthResponse {
-  token: string
-  user: UserProfile
-}
-
+/**
+ * User Profile Type
+ */
 export interface UserProfile {
-  id: string
+  uid: string
   email: string
-  name: string
-  organization?: string
+  username: string
+  fullName: string
+  emailVerified: boolean
+  isBooker: boolean
+  balance: number
+  createdAt: string
+  lastLogin: string
 }
 
-// Events & Registry
+/**
+ * Event Type
+ */
 export interface Event {
-  eventId: string
+  id: string
   eventName: string
-  date: string
-  location?: string
-  totalTickets: number
-  downloadedAt?: string
-  syncedAt?: string
+  eventDate: string
+  eventVenue?: string
+  ticketsSold: number
+  revenue: number
+  isOwner: boolean
+  ownerId: string
 }
 
+/**
+ * Ticket/Attendee Type
+ */
 export interface Ticket {
   ticketId: string
   eventId: string
+  attendeeName: string
+  attendeeEmail: string
   ticketType: string
   purchaseDate: string
   purchaseTime: string
-  scanned: boolean
-  scannerName?: string
-  scanTimestamp?: string
+  ticketReference: string
 }
 
-export interface ScanResult {
+/**
+ * Scan Log Type
+ */
+export interface ScanLog {
+  id: string
   ticketId: string
+  eventId: string
   timestamp: string
   scannerName: string
-  latency: number
-  status: "valid" | "invalid" | "already-used"
-  eventId: string
+  scannerUid: string
+  status: "success" | "already_verified" | "not_found" | "error"
+  errorMessage?: string
+  isOfflineScan: boolean
+  syncedToServer: boolean
 }
 
-// API Responses
-export interface ApiResponse<T> {
-  success: boolean
-  data?: T
-  error?: string
-  message?: string
-}
-
+/**
+ * Registry Download Response (for offline mode)
+ */
 export interface RegistryDownloadResponse {
   eventId: string
   eventName: string
   tickets: Ticket[]
-  totalTickets: number
+  downloadedAt: string
 }
 
+/**
+ * Sync Payload (for syncing offline scans)
+ */
 export interface SyncPayload {
   eventId: string
-  totalScanned: number
-  firstScanTimestamp: string
-  lastScanTimestamp: string
-  scanResults: ScanResult[]
-}
-
-// Server Status
-export interface ServerStatus {
-  isRunning: boolean
-  port: number
-  localIP: string
-  eventId?: string
-  connectedClients: number
+  scans: Array<{
+    ticketId: string
+    timestamp: string
+    scannerName: string
+    scannerUid: string
+  }>
 }

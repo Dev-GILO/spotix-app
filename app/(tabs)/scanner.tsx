@@ -1,5 +1,5 @@
 import { View, StyleSheet } from "react-native"
-import { ScannerScreen } from "@/components/ScannerScreen"
+import  ScannerScreen  from "@/components/ScannerScreen"
 
 export default function Scanner() {
   return (

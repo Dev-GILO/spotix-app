@@ -1,20 +1,11 @@
-import { type BottomTabNavigationOptions, createBottomTabNavigator } from "@react-navigation/bottom-tabs"
+import { Tabs } from "expo-router"
 import { MaterialCommunityIcons } from "@expo/vector-icons"
-import HomeScreen from "./index"
-import RegistryScreen from "./registry"
-import ScannerScreen from "./scanner"
-import SyncScreen from "./sync"
-import LogsScreen from "./logs"
 import { COLORS } from "@/theme/colors"
-
-const Tab = createBottomTabNavigator()
-
-const TabBarIcon = (props: any) => <MaterialCommunityIcons {...props} />
 
 export default function TabLayout() {
   return (
-    <Tab.Navigator
-      screenOptions={({ route }): BottomTabNavigationOptions => ({
+    <Tabs
+      screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.mutedForeground,
@@ -23,34 +14,77 @@ export default function TabLayout() {
           borderTopColor: COLORS.muted,
           borderTopWidth: 1,
         },
-        tabBarIcon: ({ color, size }) => {
-          let iconName: string
-
-          if (route.name === "index") iconName = "home"
-          else if (route.name === "registry") iconName = "download"
-          else if (route.name === "scanner") iconName = "qrcode-scan"
-          else if (route.name === "sync") iconName = "cloud-upload"
-          else iconName = "file-document"
-
-          return <TabBarIcon name={iconName} size={size} color={color} />
-        },
-        tabBarLabel:
-          route.name === "index"
-            ? "Home"
-            : route.name === "registry"
-              ? "Registry"
-              : route.name === "scanner"
-                ? "Scanner"
-                : route.name === "sync"
-                  ? "Sync"
-                  : "Logs",
-      })}
+      }}
     >
-      <Tab.Screen name="index" component={HomeScreen} />
-      <Tab.Screen name="registry" component={RegistryScreen} />
-      <Tab.Screen name="scanner" component={ScannerScreen} />
-      <Tab.Screen name="sync" component={SyncScreen} />
-      <Tab.Screen name="logs" component={LogsScreen} />
-    </Tab.Navigator>
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="home"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="registry"
+        options={{
+          title: "Registry",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="download"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="scanner"
+        options={{
+          title: "Scanner",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="qrcode-scan"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="sync"
+        options={{
+          title: "Sync",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="cloud-upload"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="logs"
+        options={{
+          title: "Logs",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialCommunityIcons
+              name="file-document"
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
+    </Tabs>
   )
 }
